@@ -25,20 +25,8 @@ public class HomeController {
     private final MemberRepository memberRepository;
 
     @GetMapping("/")
-    public String home(HttpServletRequest request, Model model) {
-
-        HttpSession session = request.getSession(false);
-
-        if (session == null) {
-            return "home";
-        }
-
-        Long memberId = (Long) session.getAttribute(MEMBER_ID_SESSION);
-        //알 수 없는 쿠키키
-        if (memberId == null) {
-            return "home";
-        }
-
+    public String home(@SessionAttribute(name = MEMBER_ID_SESSION, required = false) Long memberId, Model model) {
+        log.info("memberId = [{}]를 가진 유저를 찾습니다.", memberId);
         Member loginMember = memberRepository.findById(memberId);
 
         // DB에 해당 memberId가 없는 경우
