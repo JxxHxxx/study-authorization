@@ -1,24 +1,17 @@
 package study.authorization.domain.member;
 
+import org.springframework.stereotype.Repository;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import java.util.List;
 
+@Repository
 public class MemberRepository {
 
     private final Map<Long, Member> store = new HashMap<>();
     private static Long sequence = 0L;
-
-    private static MemberRepository MrInstance = new MemberRepository();
-
-    private MemberRepository() {
-    }
-
-    public static MemberRepository getInstance() {
-        return MrInstance;
-    }
-
 
     public Member save(Member member) {
         store.put(++sequence, member);

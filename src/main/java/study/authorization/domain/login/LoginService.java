@@ -1,23 +1,17 @@
 package study.authorization.domain.login;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import study.authorization.domain.member.Member;
 import study.authorization.domain.member.MemberRepository;
 
 
 
+@Service
+@RequiredArgsConstructor
 public class LoginService {
 
-    private MemberRepository memberRepository = MemberRepository.getInstance();
-
-    private LoginService() {
-
-    }
-
-    private static LoginService LsInstance = new LoginService();
-
-    public static LoginService getInstance() {
-        return LsInstance;
-    }
+    private final MemberRepository memberRepository;
 
     public Member login(String name, String password) {
         Member findMember = memberRepository.findByName(name);
