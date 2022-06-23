@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import study.authorization.domain.member.Member;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @Slf4j
@@ -20,6 +22,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class LoginController {
 
+    public static final String MEMBER_ID_SESSION = "MEMBER_ID_SESSION";
     private final LoginService loginService;
 
     @GetMapping("/login")
@@ -30,7 +33,7 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String postLoginForm(@Valid @ModelAttribute("loginDto") LoginDto loginDto, BindingResult bindingResult, HttpServletResponse response) {
+    public String postLoginForm(@Valid @ModelAttribute("loginDto") LoginDto loginDto, BindingResult bindingResult, HttpServletRequest request) {
         log.info("유저 [{}] 로그인 검증을 실시합니다.", loginDto.getName());
 
         if (bindingResult.hasErrors()) {
@@ -46,13 +49,11 @@ public class LoginController {
             return "login/loginForm";
         }
 
-        //쿠키 생성 //쿠키에 시간 정보를 주지 않으면 세션 크키(브라우저 종료시 모두 종료)
-        Cookie idCookie = new Cookie("memberIdCookie", String.valueOf(loginMember.getId()));
-
-        //생성된 쿠키를 클라이언트(브라우저)로 보내줘야함 > 응답에 담아서 같이 보냄
-        response.addCookie(idCookie);
-
-        // 로그인 성공 처리 TODO
+        // 로그인 성공 처리
+        // 세션이 있으면 있는 세션 반환, 없으면 신규 세션을 생성
+        HttpSession session = request.getSession();
+        // 세션에 로그이 회원 정보 보관
+        session.setAttribute(MEMBER_ID_SESSION, loginMember.getId());
 
         return "redirect:/";
     }
@@ -68,12 +69,12 @@ public class LoginController {
     }
 
     @PostMapping("/logout")
-    public String logout( HttpServletResponse response){
+    public String logout(HttpServletRequest request){
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
 
-        Cookie cookie = new Cookie("memberIdCookie", null);
-        cookie.setMaxAge(0);
-
-        response.addCookie(cookie);
         return "redirect:/";
     }
 

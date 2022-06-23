@@ -22,5 +22,12 @@ public class TestInit {
         member.setWallet(10000L);
 
         memberRepository.save(member);
+
+        Member member2 = new Member();
+        member2.setName("memberB");
+        member2.setPassword("1234");
+        member2.setWallet(10000L);
+
+        memberRepository.save(member2);
     }
 }
