@@ -5,24 +5,23 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import study.authorization.domain.member.Member;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.*;
 import javax.validation.Valid;
+
+import static study.authorization.domain.login.SessionConst.MEMBER_ID;
+
 
 @Slf4j
 @Controller
 @RequiredArgsConstructor
 public class LoginController {
 
-    public static final String MEMBER_ID_SESSION = "MEMBER_ID_SESSION";
+
     private final LoginService loginService;
 
     @GetMapping("/login")
@@ -53,7 +52,7 @@ public class LoginController {
         // 세션이 있으면 있는 세션 반환, 없으면 신규 세션을 생성
         HttpSession session = request.getSession();
         // 세션에 로그이 회원 정보 보관
-        session.setAttribute(MEMBER_ID_SESSION, loginMember.getId());
+        session.setAttribute(MEMBER_ID, loginMember.getId());
         log.info("유저 [{}] 로그인 검증에 성공합니다.", loginDto.getName());
         return "redirect:/";
     }

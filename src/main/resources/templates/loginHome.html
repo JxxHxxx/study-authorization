@@ -52,7 +52,7 @@
     <div class="login-box">
         <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
             <button class="w-100 btn btn-lg btn-primary"
-                    type="button" th:onclick="|location.href='@{/join}'|">XXX
+                    type="button" th:onclick="|location.href='@{/{itemId}/items(itemId=${member.Id})}'|">보유 아이템
             </button>
 
 
@@ -60,10 +60,8 @@
                     type="button" th:onclick="|location.href='@{/logout}'|">로그아웃
             </button>-->
 
-            <form th:action="@{/logout}" method="post">
-                <button class="w-100 btn btn-lg btn-primary opt-2"
-                        type="submit">로그아웃
-                </button>
+            <form class="w-100 btn btn-lg btn-primary opt-2"th:action="@{/logout}" method="post">
+                <button type="submit">로그아웃</button>
             </form>
 
 
