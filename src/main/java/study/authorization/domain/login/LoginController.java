@@ -13,6 +13,8 @@ import study.authorization.domain.member.Member;
 import javax.servlet.http.*;
 import javax.validation.Valid;
 
+import java.util.NoSuchElementException;
+
 import static study.authorization.domain.login.SessionConst.MEMBER_ID;
 
 
@@ -51,8 +53,25 @@ public class LoginController {
         // 로그인 성공 처리
         // 세션이 있으면 있는 세션 반환, 없으면 신규 세션을 생성
         HttpSession session = request.getSession();
+        if (session.isNew()) {
+            log.info("세션을 신규로 생성합니다.");
+            log.info("신규 세션 ID [{}]", session.getId());
+        }
+        try {
+            log.info("세션 setAttribute 전 NAME [{}]", session.getAttributeNames().nextElement());
+        } catch (NoSuchElementException e) {
+            log.info("세션 setAttribute 전에는 Name == null");
+        }
+
         // 세션에 로그이 회원 정보 보관
         session.setAttribute(MEMBER_ID, loginMember.getId());
+
+        try {
+            log.info("세션 setAttribute 후 NAME [{}]", session.getAttributeNames().nextElement());
+        } catch (NoSuchElementException e) {
+            log.info("=============");
+        }
+
         log.info("유저 [{}] 로그인 검증에 성공합니다.", loginDto.getName());
         return "redirect:/";
     }
